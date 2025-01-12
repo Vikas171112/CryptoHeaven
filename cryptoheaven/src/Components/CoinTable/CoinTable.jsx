@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { getCoinData } from "../Services/getCoinList";
 
 function CoinTable({ currency }) {
-  const [coinData, setCoinData] = useState([]); // State to store coin data
+  const [coinData, setCoinData] = useState([]);
+  const [page, setPage] = useState(1); // State to store coin data
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await getCoinData(currency); // Await the API call
+        const response = await getCoinData(page, currency); // Await the API call
         console.log("API Response:", response);
         const coinArray = response.data; // Access the 'data' key in the response
         console.log("Coin Data:", coinArray);
@@ -18,7 +19,7 @@ function CoinTable({ currency }) {
     }
 
     fetchData(); // Call the fetchData function
-  }, [currency]);
+  }, [page, currency]);
 
   return (
     <div>
@@ -58,6 +59,21 @@ function CoinTable({ currency }) {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="flex gap-4 justify-center items-center">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="btn btn-primary  text-white text-2xl"
+        >
+          Prev
+        </button>
+        <button
+          onClick={() => setPage(page + 1)}
+          className="btn btn-secondary  text-white text-2xl"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
