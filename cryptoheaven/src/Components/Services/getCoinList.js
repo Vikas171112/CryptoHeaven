@@ -6,7 +6,7 @@ export async function getCoinData(page, currency) {
     const response = await axiosinstance.get(
       `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${per_page}&page=${page}`
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.log("Error in getting Coin List", error);
   }

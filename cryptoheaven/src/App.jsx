@@ -5,6 +5,7 @@ import Navbar from "./Components/Navigation/Navbar";
 
 function App() {
   const [currency, setCurrency] = useState("inr");
+
   return (
     <>
       <Navbar currency={currency} setCurrency={setCurrency} />
