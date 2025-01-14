@@ -1,12 +1,22 @@
 import React, { useContext } from "react";
 import { CurrencyContext } from "../Context/CurrencyContect";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { setCurrency } = useContext(CurrencyContext);
+  const navigate = useNavigate();
 
+  function gotoHome() {
+    navigate("/");
+  }
   return (
     <div className="navbar bg-base-100  ">
-      <div className="flex-1">
+      <div
+        className="flex-1"
+        onClick={() => {
+          gotoHome();
+        }}
+      >
         <a className="btn btn-ghost text-xl">CryptoHeaven</a>
       </div>
       <div className="flex-none">
