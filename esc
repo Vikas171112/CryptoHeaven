@@ -1,0 +1,11 @@
+[33mcommit 7ca664ff5662511f356a0a952c0863c94dcaf8f2[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Vikas Jha <vjha6510@gmail.com>
+Date:   Sun Jan 12 15:10:17 2025 +0530
+
+    implemented pagination
+
+[33mcommit 501b1098e4495ef5a2c6cae135361cccd8f1a50d[m
+Author: Vikas Jha <vjha6510@gmail.com>
+Date:   Sat Jan 11 15:14:21 2025 +0530
+
+    fetched data using useeffect hook

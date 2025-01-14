@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { CurrencyContext } from "../Context/CurrencyContect";
 
-function Navbar({ currency, setCurrency }) {
-  const handleCurrencyChange = (newCurrency) => {
-    setCurrency(newCurrency); // Update the selected currency
-  };
+function Navbar() {
+  const { setCurrency } = useContext(CurrencyContext);
+
   return (
     <div className="navbar bg-base-100  ">
       <div className="flex-1">
@@ -20,14 +20,14 @@ function Navbar({ currency, setCurrency }) {
               <ul className="bg-base-100 rounded-t-none p-2 z-30">
                 <li
                   onClick={() => {
-                    handleCurrencyChange("inr");
+                    setCurrency("inr");
                   }}
                 >
                   <a>INR</a>
                 </li>
                 <li
                   onClick={() => {
-                    handleCurrencyChange("usd");
+                    setCurrency("usd");
                   }}
                 >
                   <a>USD</a>

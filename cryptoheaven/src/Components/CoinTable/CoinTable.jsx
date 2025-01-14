@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { getCoinData } from "../Services/getCoinList";
 import { useQuery } from "@tanstack/react-query";
+import { CurrencyContext } from "../Context/CurrencyContect";
+import { useNavigate } from "react-router-dom";
 
-function CoinTable({ currency }) {
+function CoinTable() {
   const [page, setPage] = useState(1); // State to manage pagination
+  const { currency } = useContext(CurrencyContext);
+  const navigate = useNavigate();
 
   // Use React Query with the object-based signature
   const { data, isLoading, isError, error } = useQuery({
@@ -13,7 +17,9 @@ function CoinTable({ currency }) {
     cachetime: 1000 * 60 * 2,
     staleTime: 1000 * 60 * 2, // Keep previous data while fetching new data
   });
-
+  function handlenavigationtoDetails(id) {
+    navigate(`/details/${id}`);
+  }
   if (isLoading) {
     return (
       <div className="text-center text-lg">
@@ -47,7 +53,13 @@ function CoinTable({ currency }) {
           <tbody>
             {data && data.length > 0 ? (
               data.map((coin) => (
-                <tr className="bg-gray-300 text-blue-700" key={coin.id}>
+                <tr
+                  className="bg-gray-300 text-blue-700 cursor-pointer"
+                  onClick={() => {
+                    handlenavigationtoDetails(coin.id);
+                  }}
+                  key={coin.id}
+                >
                   <td className="flex items-center gap-1">
                     <img className="h-10" src={coin.image} alt={coin.name} />
                     <h4 className="text-lg font-semibold">{coin.name}</h4>
