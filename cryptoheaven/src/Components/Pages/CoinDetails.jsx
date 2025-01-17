@@ -1,8 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getCoinDetails } from "../Services/getCoinDetails";
 import { CurrencyContext } from "../Context/CurrencyContect";
+
+// Import price formatting function
+import moment from "moment";
+import { formatPrice } from "../Helpers/fromatPrice";
+import CoinCharts from "../CoinCharts/CoinCharts";
 
 function CoinDetails() {
   const { currency } = useContext(CurrencyContext);
@@ -11,82 +16,114 @@ function CoinDetails() {
     data: coin,
     isLoading,
     isError,
-    error,
   } = useQuery({
-    queryKey: ["coinsdetails", coinId],
+    queryKey: ["coinData", coinId],
     queryFn: () => getCoinDetails(coinId),
     keepPreviousData: true,
-    cachetime: 1000 * 60 * 2,
+    cacheTime: 1000 * 60 * 2,
     staleTime: 1000 * 60 * 2,
   });
 
-  // useEffect(() => {
-  //   console.log(coin);
-  // }, [coin]);
-
   if (isLoading) {
-    return (
-      <div className="text-center text-2xl font-bold animate-pulse">
-        Loading...
-      </div>
-    ); // Loading state
+    return <div>Loading coin data</div>;
   }
 
   if (isError) {
-    return (
-      <div className="text-center text-red-500">Error: {error.message}</div>
-    ); // Error state
+    return <div className="text-center text-red-500">Error in coin data</div>;
   }
 
   if (!coin) {
-    return <div className="text-center">Coin data not available.</div>; // Handle cases where coin is null
+    return <div className="text-center">Coin data not available.</div>;
   }
 
+  const currentPrice = coin.market_data.current_price[currency];
+  const formattedPrice = formatPrice(currentPrice, currency);
+  const marketCap = coin.market_data.market_cap[currency];
+  const formattedMarketCap = formatPrice(marketCap, currency);
+  const volume = coin.market_data.total_volume[currency];
+  const formattedVolume = formatPrice(volume, currency);
+  const fdv = coin.market_data.fdv ? coin.market_data.fdv[currency] : null;
+  const formattedFdv = fdv ? formatPrice(fdv, currency) : "N/A";
+  const ath = coin.market_data.ath[currency];
+  const formattedAth = formatPrice(ath, currency);
+  const athDate = moment(coin.market_data.ath_date[currency]).format(
+    "MMM DD, YYYY"
+  );
+  const atl = coin.market_data.atl[currency];
+  const formattedAtl = formatPrice(atl, currency);
+  const atlDate = moment(coin.market_data.atl_date[currency]).format(
+    "MMM DD, YYYY"
+  );
+
   return (
-    <div className="container mx-auto p-4 md:p-8 lg:p-12">
-      {" "}
-      {/* Container for responsiveness */}
-      <div className="bg-white rounded-lg shadow-md p-6 md:p-8 lg:p-10">
-        {" "}
-        {/* Card styling */}
-        <div className="flex flex-col md:flex-row items-center md:items-start">
+    <div className="main-container flex h-screen">
+      <div className="charts-container w-3/4 border-r-2 ">
+        <CoinCharts coinId={coinId} />
+      </div>
+      <div className="content-container p-4">
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src={coin?.image?.large}
+            alt={coin.name}
+            className="w-32 h-32 mb-2"
+          />
+          <h2 className="text-3xl font-bold text-green-500">{coin.name}</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {" "}
-          {/* Flex for image and details */}
-          <div className="mb-4 md:mb-0 md:mr-8 w-full md:w-1/3">
-            {" "}
-            {/* Image container */}
-            <img
-              src={coin.image.large}
-              alt={coin.name} // Add alt text for accessibility
-              className="w-full h-auto rounded-lg shadow-sm" // Image styling
-            />
+          {/* Use a grid for better layout */}
+          <div>
+            <h3 className="text-xl font-semibold text-yellow-400 mb-2">
+              Market Data
+            </h3>
+            <p>
+              Current Price ({currency.toUpperCase()}):{" "}
+              <span className="text-white">{formattedPrice}</span>
+            </p>
+            <p>
+              24h Price Change:{" "}
+              <span
+                className={`text-white ${
+                  coin.market_data.price_change_percentage_24h > 0
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {coin.market_data.price_change_percentage_24h.toFixed(2)}%
+              </span>
+            </p>
+            <p>
+              Market Cap:{" "}
+              <span className="text-white">{formattedMarketCap}</span>
+            </p>
+            <p>
+              Trading Volume (24h):{" "}
+              <span className="text-white">{formattedVolume}</span>
+            </p>
+            <p>
+              Circulating Supply:{" "}
+              <span className="text-white">
+                {coin.market_data.circulating_supply}
+              </span>
+            </p>
+            <p>
+              Fully Diluted Valuation:{" "}
+              <span className="text-white">{formattedFdv}</span>
+            </p>
           </div>
-          <div className="w-full md:w-2/3">
-            {" "}
-            {/* Details container */}
-            <h2 className="text-2xl font-bold mb-2">{coin.name}</h2>{" "}
-            {/* Coin name */}
-            <div
-              className="text-gray-700 mb-4"
-              dangerouslySetInnerHTML={{ __html: coin.description.en }}
-            ></div>
-            {/* Description with HTML rendering */}
-            <div className="flex flex-wrap gap-2">
-              <div className="bg-gray-200 rounded-full px-3 py-1 text-sm font-medium text-gray-800">
-                Market Cap Rank: {coin.market_cap_rank}
-              </div>
-              {/* Add more details here using similar styling */}
-              {/* Example: Current Price */}
-              {coin.market_data?.current_price && (
-                <div className="bg-gray-200 rounded-full px-3 py-1 text-sm font-medium text-gray-800">
-                  <h4>
-                    Current Price:{" "}
-                    {coin.market_data.current_price[currency] ||
-                      "Price not available"}
-                  </h4>
-                </div>
-              )}
-            </div>
+          <div>
+            <h3 className="text-xl font-semibold text-yellow-400 mb-2">
+              All-Time Stats
+            </h3>
+            <p>
+              All-Time High ({currency.toUpperCase()}):{" "}
+              <span className="text-white">{formattedAth}</span> ({athDate})
+            </p>
+            <p>
+              All-Time Low ({currency.toUpperCase()}):{" "}
+              <span className="text-white">{formattedAtl}</span> ({atlDate})
+            </p>
           </div>
         </div>
       </div>

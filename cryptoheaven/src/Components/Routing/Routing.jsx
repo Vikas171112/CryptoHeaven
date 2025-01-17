@@ -1,12 +1,17 @@
 import React, { lazy, Suspense } from "react";
 
 import { Route, Routes } from "react-router-dom";
-import CoinDetails from "../Pages/CoinDetails";
-import Home from "../Pages/Home";
+
 import MainLayout from "../MainLayout/MainLayout";
 
-const HomeLazy = lazy(() => import("../Pages/Home"));
-const CoinDetailslazy = lazy(() => import("../Pages/CoinDetails"));
+const Home = lazy(() => {
+  console.log("Home component is being loaded...");
+  return import("../Pages/Home");
+});
+const CoinDetails = lazy(() => {
+  console.log("CoinDetails component is being loaded...");
+  return import("../Pages/CoinDetails");
+});
 
 function Routing() {
   return (

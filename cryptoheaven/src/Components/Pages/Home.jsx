@@ -6,8 +6,11 @@ import CoinTable from "../CoinTable/CoinTable";
 function Home() {
   return (
     <>
-      <Banner />
-      <CoinTable />
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-grow px-4 py-8 md:px-8 lg:px-12">
+          <CoinTable />
+        </main>
+      </div>
     </>
   );
 }

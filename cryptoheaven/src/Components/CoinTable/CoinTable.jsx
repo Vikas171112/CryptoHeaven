@@ -38,16 +38,16 @@ function CoinTable() {
 
   return (
     <div>
-      <div className="overflow-x-auto">
-        <table className="table table-xs">
-          <thead className="bg-gray-950">
-            <tr className="text-lime-300 text-lg">
-              <th>Name</th>
-              <th>Current Price ({currency.toUpperCase()})</th>
-              <th>High in 24hrs</th>
-              <th>Low in 24 hrs</th>
-              <th>Last Updated</th>
-              <th>Market Cap</th>
+      <div className="overflow-x-auto rounded shadow-md">
+        <table className="table-fixed table-auto w-full">
+          <thead className="bg-gray-800 text-white">
+            <tr className="text-left text-lg">
+              <th className="p-2">Name</th>
+              <th className="p-2">Current Price ({currency.toUpperCase()})</th>
+              <th className="p-2">High in 24hrs</th>
+              <th className="p-2">Low in 24 hrs</th>
+              <th className="p-2">Last Updated</th>
+              <th className="p-2">Market Cap</th>
             </tr>
           </thead>
           <tbody>
