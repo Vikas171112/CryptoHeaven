@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosInstance from "../Helpers/axiosinstance";
 
 export async function getHistoricData(id, days, interval, currency) {

@@ -1,17 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCoinDetails } from "../Services/getCoinDetails";
 import { CurrencyContext } from "../Context/CurrencyContect";
+import ChartContainer from "../ChartContainer/ChartContainer";
 
 // Import price formatting function
 import moment from "moment";
 import { formatPrice } from "../Helpers/fromatPrice";
-import CoinCharts from "../CoinCharts/CoinCharts";
 
 function CoinDetails() {
   const { currency } = useContext(CurrencyContext);
   const { coinId } = useParams();
+
+  const [selectedChart, setSelectedChart] = useState("price"); // Track the selected chart
+
   const {
     data: coin,
     isLoading,
@@ -57,9 +60,61 @@ function CoinDetails() {
 
   return (
     <div className="main-container flex h-screen">
-      <div className="charts-container w-3/4 border-r-2 ">
-        <CoinCharts coinId={coinId} />
+      <div className="charts-container w-3/4 border-r-2 p-4">
+        {/* Buttons to toggle charts */}
+        <div className="flex justify-center mb-4 gap-2">
+          <button
+            className={`py-2 px-4 rounded ${
+              selectedChart === "price"
+                ? "bg-green-500 text-white"
+                : "bg-gray-700 text-gray-300"
+            }`}
+            onClick={() => setSelectedChart("price")}
+          >
+            Price Chart
+          </button>
+          <button
+            className={`py-2 px-4 rounded ${
+              selectedChart === "marketCaps"
+                ? "bg-green-500 text-white"
+                : "bg-gray-700 text-gray-300"
+            }`}
+            onClick={() => setSelectedChart("marketCaps")}
+          >
+            Market Caps Chart
+          </button>
+          <button
+            className={`py-2 px-4 rounded ${
+              selectedChart === "totalVolume"
+                ? "bg-green-500 text-white"
+                : "bg-gray-700 text-gray-300"
+            }`}
+            onClick={() => setSelectedChart("totalVolume")}
+          >
+            Total Volume Chart
+          </button>
+        </div>
+
+        {/* Render the selected chart */}
+        {selectedChart === "price" && (
+          <ChartContainer coinId={coinId} label={"Price"} dataType={"prices"} />
+        )}
+        {selectedChart === "marketCaps" && (
+          <ChartContainer
+            coinId={coinId}
+            label={"Market Caps"}
+            dataType={"market_caps"}
+          />
+        )}
+        {selectedChart === "totalVolume" && (
+          <ChartContainer
+            coinId={coinId}
+            label={"Total Volume"}
+            dataType={"total_volumes"}
+          />
+        )}
       </div>
+
       <div className="content-container p-4">
         <div className="flex flex-col items-center mb-6">
           <img
@@ -71,8 +126,6 @@ function CoinDetails() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {" "}
-          {/* Use a grid for better layout */}
           <div>
             <h3 className="text-xl font-semibold text-yellow-400 mb-2">
               Market Data
@@ -84,7 +137,7 @@ function CoinDetails() {
             <p>
               24h Price Change:{" "}
               <span
-                className={`text-white ${
+                className={`${
                   coin.market_data.price_change_percentage_24h > 0
                     ? "text-green-500"
                     : "text-red-500"
